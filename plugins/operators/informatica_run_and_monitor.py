@@ -59,19 +59,32 @@ class InformaticaRunAndMonitorJobOperator(BaseOperator):
             elif isinstance(response_data, dict):
                 status_data = response_data
             else:
-                raise Exception(f"Unexpected response format: {response_data}")
+                status_data = response_data
+                #raise Exception(f"Unexpected response format: {response_data}")
+                #raise Exception(f"Unexpected response format: {response_data}")
 
+            self.log.info(f"Line 66: {status_data}")
+            
             # Check for endTime and errorMsg
-            end_time = status_data.get("endTime")
-            error_msg = status_data.get("errorMsg")
-            state = status_data.get("state")
+            if isinstance(status_data, dict):
+                error_msg = status_data.get("errorMsg", "N/A")
+                state = status_data.get("state", 0)
+                self.log.info(f"State coming from Response: {state}")
+            
+            else:
+                error_msg = "N/A"
+                state = 0
 
-            if end_time:
-                if error_msg and state == 3:
-                    raise Exception(f"Job failed with error: {error_msg}")
-                elif state == 1:
-                    self.log.info("Job completed successfully.")
-                    self.log.info({end_time})
+            self.log.info(f"State coming from Response: {state}")
+            
+            if state == 3:
+                self.log.info(f"Job failed with error: {error_msg}")
+                raise Exception(f"Job failed with error: {error_msg}")
+            elif state == 1:
+                self.log.info("Job completed successfully.")
+                #self.log.info({end_time})
+                time.sleep(60)
+
                 break
             else:
                 self.log.info(f"Job still running. Checking again in {self.poll_interval} seconds...")
