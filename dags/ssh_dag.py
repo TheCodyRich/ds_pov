@@ -21,7 +21,7 @@ begin = DummyOperator(
 ssh_task = SSHOperator(
 task_id = 'ssh_task',
 ssh_conn_id = 'ssh_conn',
-command = 'ls -la',
+command = './firstfile.sh',
 dag = dag,
 )
 
