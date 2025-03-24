@@ -1,4 +1,4 @@
-FROM quay.io/astronomer/astro-runtime:12.2.0
+FROM quay.io/astronomer/astro-runtime:12.7.1
 
 # Switch to root user to perform privileged actions
 USER root
